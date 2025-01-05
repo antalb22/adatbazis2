@@ -157,7 +157,7 @@ SELECT
     (SELECT COUNT(*) 
      FROM Games g 
      WHERE g.user_id = u.user_id AND g.result = 'Loss') AS total_losses,
-    (SELECT COALESCE(MAX(t.points), 0) 
+    (SELECT MAX(t.points)
      FROM Throws t 
      WHERE t.user_id = u.user_id) AS highest_score
 FROM
