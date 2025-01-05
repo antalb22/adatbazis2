@@ -1,6 +1,6 @@
 CREATE OR REPLACE PACKAGE pkg_users AS
   email_mar_letezik_exc EXCEPTION;
-  PRAGMA EXCEPTION_INIT(email_mar_letezik_exc, -20200);
+  PRAGMA EXCEPTION_INIT(email_mar_letezik_exc, -20000);
 
   PROCEDURE adduser(p_name  VARCHAR2
                    ,p_email VARCHAR2);

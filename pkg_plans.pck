@@ -1,7 +1,7 @@
 CREATE OR REPLACE PACKAGE pkg_plans AS
 
   user_not_found_exc EXCEPTION;
-  PRAGMA EXCEPTION_INIT(user_not_found_exc, -20300);
+  PRAGMA EXCEPTION_INIT(user_not_found_exc, -20002);
 
   PROCEDURE add_plan(p_name    VARCHAR2
                     ,p_goal    VARCHAR2

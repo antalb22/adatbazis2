@@ -1,15 +1,15 @@
 CREATE OR REPLACE PACKAGE pkg_throws AS
   user_not_found_exc EXCEPTION;
-  PRAGMA EXCEPTION_INIT(user_not_found_exc, -20001);
+  PRAGMA EXCEPTION_INIT(user_not_found_exc, -20003);
 
   game_not_found_exc EXCEPTION;
-  PRAGMA EXCEPTION_INIT(game_not_found_exc, -20002);
+  PRAGMA EXCEPTION_INIT(game_not_found_exc, -20004);
 
   score_exceeds_limit_exc EXCEPTION;
-  PRAGMA EXCEPTION_INIT(score_exceeds_limit_exc, -20003);
+  PRAGMA EXCEPTION_INIT(score_exceeds_limit_exc, -20005);
 
   invalid_point_exc EXCEPTION;
-  PRAGMA EXCEPTION_INIT(invalid_point_exc, -20004);
+  PRAGMA EXCEPTION_INIT(invalid_point_exc, -20006);
 
   PROCEDURE add_throw(p_game_id     NUMBER
                      ,p_user_id     NUMBER

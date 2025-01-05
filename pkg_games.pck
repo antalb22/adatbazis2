@@ -1,6 +1,6 @@
 CREATE OR REPLACE PACKAGE pkg_games AS
   user_not_found_exc EXCEPTION;
-  PRAGMA EXCEPTION_INIT(user_not_found_exc, -20400);
+  PRAGMA EXCEPTION_INIT(user_not_found_exc, -20001);
 
   -- One-player games
   PROCEDURE add_game(p_user_id NUMBER
