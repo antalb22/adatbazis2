@@ -14,21 +14,22 @@ CREATE OR REPLACE PACKAGE BODY pkg_plans AS
                     ,p_user_id NUMBER) IS
     v_user_count NUMBER;
   BEGIN
-    SELECT COUNT(*) INTO v_user_count FROM users WHERE user_id = p_user_id;
+    SELECT COUNT(*)
+      INTO v_user_count
+      FROM appuser
+     WHERE user_id = p_user_id;
   
     IF v_user_count = 0
     THEN
       RAISE user_not_found_exc;
     END IF;
   
-    INSERT INTO plans
-      (plan_id
-      ,NAME
+    INSERT INTO plan
+      (NAME
       ,goal
       ,user_id)
     VALUES
-      (plans_seq.nextval
-      ,p_name
+      (p_name
       ,p_goal
       ,p_user_id);
   END add_plan;

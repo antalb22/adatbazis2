@@ -21,22 +21,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_games AS
                     ,p_date    DATE) IS
     v_user_count NUMBER;
   BEGIN
-    SELECT COUNT(*) INTO v_user_count FROM users WHERE user_id = p_user_id;
+    SELECT COUNT(*)
+      INTO v_user_count
+      FROM appuser
+     WHERE user_id = p_user_id;
   
     IF v_user_count = 0
     THEN
       RAISE user_not_found_exc;
     END IF;
   
-    INSERT INTO games
-      (game_id
-      ,match_id
+    INSERT INTO game
+      (match_id
       ,user_id
       ,RESULT
       ,game_date)
     VALUES
-      (games_seq.nextval
-      ,match_seq.nextval
+      (match_seq.nextval
       ,p_user_id
       ,p_result
       ,p_date);
@@ -53,11 +54,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_games AS
   BEGIN
     SELECT COUNT(*)
       INTO v_user_1_count
-      FROM users
+      FROM appuser
      WHERE user_id = p_user_id_1;
     SELECT COUNT(*)
       INTO v_user_2_count
-      FROM users
+      FROM appuser
      WHERE user_id = p_user_id_2;
   
     IF v_user_1_count = 0
@@ -70,55 +71,47 @@ CREATE OR REPLACE PACKAGE BODY pkg_games AS
   
     IF p_winner = p_user_id_1
     THEN
-      INSERT INTO games
-        (game_id
-        ,match_id
+      INSERT INTO game
+        (match_id
         ,user_id
         ,RESULT
         ,game_date)
       VALUES
-        (games_seq.nextval
-        ,v_match_id
+        (v_match_id
         ,p_user_id_1
         ,'Win'
         ,p_date);
     
-      INSERT INTO games
-        (game_id
-        ,match_id
+      INSERT INTO game
+        (match_id
         ,user_id
         ,RESULT
         ,game_date)
       VALUES
-        (games_seq.nextval
-        ,v_match_id
+        (v_match_id
         ,p_user_id_2
         ,'Loss'
         ,p_date);
     
     ELSE
-      INSERT INTO games
-        (game_id
-        ,match_id
+      INSERT INTO game
+        (match_id
         ,user_id
         ,RESULT
         ,game_date)
       VALUES
-        (games_seq.nextval
-        ,v_match_id
+        (v_match_id
         ,p_user_id_2
         ,'Win'
         ,p_date);
     
-      INSERT INTO games
-        (game_id
-        ,match_id
+      INSERT INTO game
+        (match_id
         ,user_id
         ,RESULT
         ,game_date)
       VALUES
-        (games_seq.nextval
-        ,v_match_id
+        (v_match_id
         ,p_user_id_1
         ,'Loss'
         ,p_date);

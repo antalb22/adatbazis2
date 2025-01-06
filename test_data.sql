@@ -26,7 +26,7 @@ END;
 
 -- Two- player games
 BEGIN
-  pkg_games.add_game(1, 2, 1, SYSDATE - 10);
+  pkg_games.add_game(5, 2, 1, SYSDATE - 10);
   pkg_games.add_game(3, 4, 3, SYSDATE - 8);
   pkg_games.add_game(2, 1, 2, SYSDATE - 6);
   pkg_games.add_game(4, 3, 4, SYSDATE - 4);
@@ -36,7 +36,7 @@ END;
 
 -- Training plans
 BEGIN
-  pkg_plans.add_plan('Accuracy', 'Improve precision on trebles', 2);
+  pkg_plans.add_plan('Accuracy', 'Improve precision on trebles', 5);
   pkg_plans.add_plan('Speed', 'Reduce average throw time', 1);
   pkg_plans.add_plan('Endurance', 'Maintain consistency for 20 rounds', 3);
   pkg_plans.add_plan('Strategy', 'Practice finishes under pressure', 4);
@@ -46,7 +46,7 @@ END;
 
 -- Throws for one-player games
 BEGIN
-  pkg_throws.add_throw(1, 1, '60, 20, 50, 100, 140, 91, 40'); -- Total = 501
+  pkg_throws.add_throw(1, 1, '60, 20, 50, 100, 180, 91, 40'); -- Total = 501
 END;
 /
 BEGIN

@@ -33,41 +33,57 @@ ALTER SESSION SET CURRENT_SCHEMA=DARTS_ADMIN;
 ---------------------------------------
 
 -- Users
-CREATE TABLE Users (
+CREATE TABLE AppUser (
     user_id NUMBER PRIMARY KEY,
     name VARCHAR2(255) NOT NULL,
     email VARCHAR2(255) UNIQUE NOT NULL,
-    registration_date DATE NOT NULL
+    registration_date DATE NOT NULL,
+    created_at DATE DEFAULT SYSDATE NOT NULL,
+    created_by VARCHAR2(50),
+    updated_at DATE,
+    updated_by VARCHAR2(50)
 );
 
 -- Plans
-CREATE TABLE Plans (
+CREATE TABLE Plan (
     plan_id NUMBER PRIMARY KEY,
     name VARCHAR2(255) NOT NULL,
     goal VARCHAR2(255) NOT NULL,
     user_id NUMBER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES AppUser(user_id),
+    created_at DATE DEFAULT SYSDATE NOT NULL,
+    created_by VARCHAR2(50),
+    updated_at DATE,
+    updated_by VARCHAR2(50)
 );
 
 -- Games
-CREATE TABLE Games (
+CREATE TABLE Game (
     game_id NUMBER PRIMARY KEY,
     match_id NUMBER NOT NULL,
     user_id NUMBER NOT NULL,
     result VARCHAR2(50) NOT NULL,
     game_date DATE NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES AppUser(user_id),
+    created_at DATE DEFAULT SYSDATE NOT NULL,
+    created_by VARCHAR2(50),
+    updated_at DATE,
+    updated_by VARCHAR2(50)
 );
 
 -- Throws
-CREATE TABLE Throws (
+CREATE TABLE Throw (
     throw_id NUMBER PRIMARY KEY,
     game_id NUMBER NOT NULL,
     user_id NUMBER NOT NULL,
     points NUMBER NOT NULL,
     throw_number NUMBER NOT NULL,
-    FOREIGN KEY (game_id) REFERENCES Games(game_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (game_id) REFERENCES Game(game_id),
+    FOREIGN KEY (user_id) REFERENCES AppUser(user_id),
+    created_at DATE DEFAULT SYSDATE NOT NULL,
+    created_by VARCHAR2(50),
+    updated_at DATE,
+    updated_by VARCHAR2(50)
 );
 
 -----------------------------
@@ -100,7 +116,7 @@ INCREMENT BY 1;
 
 -- Users Trigger
 CREATE OR REPLACE TRIGGER users_seq_tr
-BEFORE INSERT ON Users
+BEFORE INSERT ON AppUser
 FOR EACH ROW
 BEGIN
     IF :new.user_id IS NULL THEN
@@ -111,7 +127,7 @@ END;
 
 -- Plans Trigger
 CREATE OR REPLACE TRIGGER plans_seq_tr
-BEFORE INSERT ON Plans
+BEFORE INSERT ON Plan
 FOR EACH ROW
 BEGIN
     IF :new.plan_id IS NULL THEN
@@ -122,7 +138,7 @@ END;
 
 -- Games Trigger
 CREATE OR REPLACE TRIGGER games_seq_tr
-BEFORE INSERT ON Games
+BEFORE INSERT ON Game
 FOR EACH ROW
 BEGIN
     IF :new.game_id IS NULL THEN
@@ -133,7 +149,7 @@ END;
 
 -- Throws Trigger
 CREATE OR REPLACE TRIGGER throws_seq_tr
-BEFORE INSERT ON Throws
+BEFORE INSERT ON Throw
 FOR EACH ROW
 BEGIN
     IF :new.throw_id IS NULL THEN
@@ -142,6 +158,65 @@ BEGIN
 END;
 /
 
+-- Audit Triggers
+
+CREATE OR REPLACE TRIGGER trg_AppUser_audit
+BEFORE INSERT OR UPDATE ON AppUser
+FOR EACH ROW
+BEGIN
+  IF INSERTING THEN
+    :NEW.created_at := SYSDATE;
+    :NEW.created_by := USER;
+  ELSIF UPDATING THEN
+    :NEW.updated_at := SYSDATE;
+    :NEW.updated_by := USER;
+  END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_Plan_audit
+BEFORE INSERT OR UPDATE ON Plan
+FOR EACH ROW
+BEGIN
+  IF INSERTING THEN
+    :NEW.created_at := SYSDATE;
+    :NEW.created_by := USER;
+  ELSIF UPDATING THEN
+    :NEW.updated_at := SYSDATE;
+    :NEW.updated_by := USER;
+  END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_Game_audit
+BEFORE INSERT OR UPDATE ON Game
+FOR EACH ROW
+BEGIN
+  IF INSERTING THEN
+    :NEW.created_at := SYSDATE;
+    :NEW.created_by := USER;
+  ELSIF UPDATING THEN
+    :NEW.updated_at := SYSDATE;
+    :NEW.updated_by := USER;
+  END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_Throw_audit
+BEFORE INSERT OR UPDATE ON Throw
+FOR EACH ROW
+BEGIN
+  IF INSERTING THEN
+    :NEW.created_at := SYSDATE;
+    :NEW.created_by := USER;
+  ELSIF UPDATING THEN
+    :NEW.updated_at := SYSDATE;
+    :NEW.updated_by := USER;
+  END IF;
+END;
+/
+
+
 -----------------------
 -- 5. Create views   --
 -----------------------
@@ -149,17 +224,17 @@ CREATE OR REPLACE VIEW vw_statistics AS
 SELECT
     u.user_id,
     (SELECT COUNT(*) 
-     FROM Games g 
+     FROM Game g 
      WHERE g.user_id = u.user_id) AS total_games,
     (SELECT COUNT(*) 
-     FROM Games g 
+     FROM Game g 
      WHERE g.user_id = u.user_id AND g.result = 'Win') AS total_wins,
     (SELECT COUNT(*) 
-     FROM Games g 
+     FROM Game g 
      WHERE g.user_id = u.user_id AND g.result = 'Loss') AS total_losses,
     (SELECT MAX(t.points)
-     FROM Throws t 
+     FROM Throw t 
      WHERE t.user_id = u.user_id) AS highest_score
 FROM
-    Users u;
+    AppUser u;
 

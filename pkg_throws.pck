@@ -29,14 +29,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_throws AS
     v_point_str    VARCHAR2(10);
     v_point        NUMBER;
   BEGIN
-    SELECT COUNT(*) INTO v_user_count FROM users WHERE user_id = p_user_id;
+    SELECT COUNT(*)
+      INTO v_user_count
+      FROM appuser
+     WHERE user_id = p_user_id;
   
     IF v_user_count = 0
     THEN
       RAISE user_not_found_exc;
     END IF;
   
-    SELECT COUNT(*) INTO v_game_count FROM games WHERE game_id = p_game_id;
+    SELECT COUNT(*) INTO v_game_count FROM game WHERE game_id = p_game_id;
   
     IF v_game_count = 0
     THEN
@@ -70,15 +73,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_throws AS
         RAISE score_exceeds_limit_exc;
       END IF;
     
-      INSERT INTO throws
-        (throw_id
-        ,game_id
+      INSERT INTO throw
+        (game_id
         ,user_id
         ,points
         ,throw_number)
       VALUES
-        (throws_seq.nextval
-        ,p_game_id
+        (p_game_id
         ,p_user_id
         ,v_point
         ,v_throw_number);

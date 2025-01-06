@@ -11,14 +11,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_users AS
                    ,p_email VARCHAR2) IS
     v_count NUMBER;
   BEGIN
-    SELECT COUNT(*) INTO v_count FROM users WHERE email = p_email;
+    SELECT COUNT(*) INTO v_count FROM appuser WHERE email = p_email;
   
     IF v_count > 0
     THEN
       RAISE email_mar_letezik_exc;
     END IF;
   
-    INSERT INTO users
+    INSERT INTO appuser
       (NAME
       ,email
       ,registration_date)
